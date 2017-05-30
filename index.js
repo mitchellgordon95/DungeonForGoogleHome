@@ -6,19 +6,20 @@ const ActionsSdkApp = require('actions-on-google').ActionsSdkApp;
 const https = require('https');
 const fs = require('fs');
 
+const express = require('express');
+var app = express();
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+app.post('/', function(req, res) {
+    const actionsApp = new ActionsSdkApp({request: req, response: res});
+    actionsApp.tell("Hi");
+});
+
 var options = {
     ca: fs.readFileSync('/home/ubuntu/https_certs/dungeon_mitchgordon_me.ca-bundle'),
     key: fs.readFileSync('/home/ubuntu/https_certs/dungeon_mitchgordon_me.key'),
     cert: fs.readFileSync('/home/ubuntu/https_certs/dungeon_mitchgordon_me.crt')
 };
-
-https.createServer(options, (req, res) => {
-    // const app = new ActionsSdkApp({request: req, response: res});
-
-    // Create functions to handle requests here
-    console.log("Got a request");
-    // app.tell("Hi");
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write('Hello World!');
-    res.end();
-}).listen(443);
+https.createServer(options, app).listen(443);
