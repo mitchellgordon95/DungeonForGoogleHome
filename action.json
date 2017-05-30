@@ -1,0 +1,26 @@
+{
+	"actions": [
+      {
+        "description": "The only way to start the game",
+        "name": "MAIN",
+        "fulfillment": {
+          "conversationName": "dungeon-begin"
+        },
+        "intent": {
+          "name": "actions.intent.MAIN",
+          "trigger": {
+            "queryPatterns": [
+              "talk to Dungeon"
+            ]
+          }
+        }
+      }
+    ],
+    "conversations": {
+      "dungeon-begin": {
+        "name": "dungeon-begin",
+        "url": "https://dungeon.mitchgordon.me"
+      }
+    }
+
+}
