@@ -2,6 +2,7 @@
 
 const hostname = 'dungeon.mitchgordon.me';
 const port = '443';
+const input_router = require('./input_router.js');
 const ActionsSdkApp = require('actions-on-google').ActionsSdkApp;
 const https = require('https');
 const fs = require('fs');
@@ -15,20 +16,20 @@ const bodyParser = require('body-parser');
 expressApp.use(bodyParser.json());
 
 function mainIntent(app) {
-    app.ask("Hello?");
+    app.ask(input_router.ask["main_intent"]);
 }
 
 function rawInput(app) {
     var input = app.getRawInput();
-    if (input === 'bye') {
-        app.tell('Goodbye!');
+    if (input in input_router.tell) {
+        app.tell(input_router.tell[input]);
+    } else if (input in input_router.ask) {
+        app.ask(input_router.ask[input]);
     } else {
         var zork = spawn("./zork", [], {cwd: path.normalize('./zork')});
 
         zork.stdout.on('data', (data) => {
-            // data = data.replace('/\W/g', '');
-            app.ask(data.toString());
-            console.log(`ps stdout: ${data}`);
+            app.ask(data.toString().replace(/>/g, ''));
         });
 
         zork.stderr.on('data', (data) => {
