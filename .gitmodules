@@ -1,0 +1,3 @@
+[submodule "zork"]
+	path = zork
+	url = git@github.com:mitchellgordon95/zork.git
