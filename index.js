@@ -20,27 +20,28 @@ function mainIntent(app) {
 }
 
 function rawInput(app) {
+    // TODO - validate conversation / user ids for injection
     var input = app.getRawInput();
     if (input in input_router.tell) {
         app.tell(input_router.tell[input]);
     } else if (input in input_router.ask) {
         app.ask(input_router.ask[input]);
+    } else if (input in input_router.do) {
+        input_router.do[input](app);
     } else {
-        var zork = spawn("./zork", [], {cwd: path.normalize('./zork')});
+        var save_file = app.getUser().user_id + app.getConversationId();
+        var zork = spawn('./zork', [save_file, input], {cwd: path.normalize('./zork')});
 
         zork.stdout.on('data', (data) => {
-            app.ask(data.toString().replace(/>/g, ''));
+            app.ask(data.toString());
         });
 
         zork.stderr.on('data', (data) => {
             app.tell('Sorry, something went wrong. Try again later.');
             console.log(`ps stderr: ${data}`);
         });
-
-        zork.on('close', (code) => {
-            console.log(`ps process exited with code ${code}`);
-        });
     }
+    // TODO - delete tmp files on conversation end
 }
 
 expressApp.post('/', function(req, res) {
