@@ -60,6 +60,12 @@ expressApp.post('/', function(req, res) {
     app.handleRequest(actionMap);
 });
 
+expressApp.get('/health', function(req, res) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write('Still up');
+    res.end();
+});
+
 var options = {
     ca: fs.readFileSync('/home/ubuntu/https_certs/dungeon_mitchgordon_me.ca-bundle'),
     key: fs.readFileSync('/home/ubuntu/https_certs/dungeon_mitchgordon_me.key'),
