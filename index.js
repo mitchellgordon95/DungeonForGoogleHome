@@ -8,12 +8,17 @@ const https = require('https');
 const fs = require('fs');
 var spawn = require('child_process').spawn;
 var path = require('path');
+var files = require('./files.js');
 
 const express = require('express');
 var expressApp = express();
 
 const bodyParser = require('body-parser');
 expressApp.use(bodyParser.json());
+
+if (!fs.existsSync(files.SAVE_DIRECTORY)) {
+    fs.mkdir(files.SAVE_DIRECTORY);
+}
 
 function mainIntent(app) {
     app.ask(input_router.ask["main_intent"]);
@@ -29,7 +34,9 @@ function rawInput(app) {
     } else if (input in input_router.do) {
         input_router.do[input](app);
     } else {
-        var save_file = app.getUser().user_id + app.getConversationId();
+        var save_file = files.getConversationSaveFile(app);
+
+        // Zork needs to be run in its own directory for file dependencies
         var zork = spawn('./zork', [save_file, input], {cwd: path.normalize('./zork')});
 
         zork.stdout.on('data', (data) => {

@@ -2,6 +2,7 @@
 
 var spawn = require('child_process').spawn;
 var path = require('path');
+var files = require('./files.js');
 
 module.exports = {
     tell: {
@@ -15,19 +16,23 @@ module.exports = {
     },
     do: {
         'save': function(app) {
-            var conversation_save_file = app.getUser().user_id + app.getConversationId();
-            var user_save_file = app.getUser().user_id;
+            var conversation_save_file = files.getConversationSaveFile(app);
+            var user_save_file = files.getUserSaveFile(app);
+            console.log(user_save_file);
+            console.log(conversation_save_file);
 
-            var zork = spawn('cp', [conversation_save_file, user_save_file], {cwd: path.normalize('./zork')});
+            spawn('cp', [conversation_save_file, user_save_file]);
             // TODO - error handling
             // TODO - confirm.
             app.ask("Saved game.");
         },
         'load': function(app) {
-            var conversation_save_file = app.getUser().user_id + app.getConversationId();
-            var user_save_file = app.getUser().user_id;
+            var conversation_save_file = files.getConversationSaveFile(app);
+            var user_save_file = files.getUserSaveFile(app);
 
-            var zork = spawn('cp', [user_save_file, conversation_save_file], {cwd: path.normalize('./zork')});
+            console.log(user_save_file);
+            console.log(conversation_save_file);
+            spawn('cp', [user_save_file, conversation_save_file]);
             // TODO - error handling
             // TODO - confirm.
             app.ask("Loaded game.");
