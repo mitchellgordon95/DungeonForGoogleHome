@@ -6,8 +6,6 @@ const input_router = require('./input_router.js');
 const ActionsSdkApp = require('actions-on-google').ActionsSdkApp;
 const https = require('https');
 const fs = require('fs');
-var spawn = require('child_process').spawn;
-var path = require('path');
 var files = require('./files.js');
 
 const express = require('express');
@@ -20,42 +18,12 @@ if (!fs.existsSync(files.SAVE_DIRECTORY)) {
     fs.mkdir(files.SAVE_DIRECTORY);
 }
 
-function mainIntent(app) {
-    app.ask(input_router.ask["main_intent"]);
-}
-
-function rawInput(app) {
-    // TODO - validate conversation / user ids for injection
-    var input = app.getRawInput();
-    if (input in input_router.tell) {
-        app.tell(input_router.tell[input]);
-    } else if (input in input_router.ask) {
-        app.ask(input_router.ask[input]);
-    } else if (input in input_router.do) {
-        input_router.do[input](app);
-    } else {
-        var save_file = files.getConversationSaveFile(app);
-
-        // Zork needs to be run in its own directory for file dependencies
-        var zork = spawn('./zork', [save_file, input], {cwd: path.normalize('./zork')});
-
-        zork.stdout.on('data', (data) => {
-            app.ask(data.toString());
-        });
-
-        zork.stderr.on('data', (data) => {
-            app.tell('Sorry, something went wrong. Try again later.');
-            console.log(`ps stderr: ${data}`);
-        });
-    }
-    // TODO - delete tmp files on conversation end
-}
-
 expressApp.post('/', function(req, res) {
     const app = new ActionsSdkApp({request: req, response: res});
     const actionMap = new Map();
-    actionMap.set(app.StandardIntents.MAIN, mainIntent);
-    actionMap.set(app.StandardIntents.TEXT, rawInput);
+    actionMap.set(app.StandardIntents.MAIN, input_router.acceptMain);
+    actionMap.set(app.StandardIntents.TEXT, input_router.acceptInput);
+    actionMap.set(app.StandardIntents.OPTION, input_router.acceptOption);
 
     app.handleRequest(actionMap);
 });

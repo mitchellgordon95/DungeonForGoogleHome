@@ -6,166 +6,44 @@ In addition to valuables, the dungeon contains various objects which may or may 
 To determine how successful you have been, a score is kept. When you find a valuable object and pick it up, you receive a certain number of points, which depends on the difficulty of finding the object.  You receive extra points for transporting the treasure safely to the living room and placing it in the trophy case.  In addition, some particularly interesting rooms have a value associated with visiting them.  The only penalty is for getting yourself killed, which you may do only twice.
 Of special note is a thief (always carrying a large bag) who likes to wander around in the dungeon (he has never been seen by the light of day).  He likes to take things.  Since he steals for pleasure rather than profit and is somewhat sadistic, he only takes things which you have seen.  Although he prefers valuables, sometimes in his haste he may take something which is worthless.  From time to time, he examines his take and discards objects which he doesn't like.  He may occasionally stop in a room you are visiting, but more often he just wanders through and rips you off (he is a skilled pickpocket).`,
 
-    tutorial:  'This is Dungeon, a mostly untouched port of the classic 1980\'s text adventure. To start the game, say "look." To quit, say "quit." To save, say "save." This will overwrite your last save. To load from the last time you said save, say "restore." To hear your score, say "score." You can come back to the tutorial at any time by saying "tutorial." To read the help manual, say "help." To hear more info about Dungeon, say "info."',
+    tutorial:  'This is Dungeon, a mostly untouched port of the classic 1980\'s text adventure. You can come back to the tutorial at any time by saying "tutorial". Some other interesting commands are "save", "restore", "quit", and "score". Be careful when saving, since it overrides your last save. To hear the rest of the commands and some other useful things, say "help". To understand the objective of the game, say "info". ',
 
-    main_intent:  'Welcome to Dungeon. We recommend starting the tutorial by saying "tutorial." Otherwise, say "look" to start or "restore" to load a saved game.',
+    main_intent:  'Welcome to Dungeon. We recommend starting the tutorial by saying "tutorial". Otherwise, say "look", to start, or "restore", to load a saved game.',
 
-    commands: `
-    brief
-    suppresses printing of long room descriptions
-    for rooms which have been visited.
+    commands: {
+        'brief': ' suppresses printing of long room descriptions for rooms which have been visited. ',
+        'superbrief': ' suppresses printing of long room descriptions for all rooms. ',
+        'verbose': ' restores long descriptions. ',
+        'info': ' prints information which might give some idea of what the game is about. ',
+        'quit': ' prints your score and asks whether you wish to continue playing. ',
+        'save': ' saves the state of the game for later continuation. ',
+        'restore': ' restores a saved game. ',
+        'inventory': ' lists the objects in your possession. ',
+        'look': ' prints a description of your surroundings. ',
+        'score': ' prints your current score and ranking. ',
+        'diagnose': ' reports on your injuries, if any. '
+    },
 
-        superbrief
-    suppresses
-    printing of long room descriptions for all rooms.
+    containment: `Some objects can contain other objects.  Many such containers can be opened and closed.  The rest are always open.   They may or may not be transparent.  For you to access (e.g., take) an object which is in a container, the container must be open.  For you to see such an object, the container must be either open or transparent.
+Containers have a capacity, and objects have sizes; the number of objects which will fit therefore depends on their sizes.  You may put any object you have access to (it need not be in your hands) into any other object.  At some point, the program will attempt to pick it up if you don't already have it, which process may fail if you're carrying too much.  Although containers can contain other containers, the program doesn't access more than one level down.`,
 
-        verbose
-    restores long descriptions.
+    fighting: `Occupants of the dungeon will, as a rule, fight back when attacked.  In some cases, they may attack even if unprovoked. Useful verbs here are attack <villain> with <weapon>, kill , etc.  Knife-throwing may or may not be useful.  You have a fighting strength which varies with time.  Being in a fight, getting killed, and being injured all lower this strength. Strength is regained with time.  Thus, it is not a good idea to fight someone immediately after being killed.  Other details should become apparent after a few melees or deaths.`,
 
-        info
-    prints information which might give some idea
-    of what the game is about.
+    command_parser: `This is a simple text parser from the 1980's. For reasons of simplicity, all words are distinguished by their first six letters.  All others are ignored.  For example, typing disassemble the encyclopedia is not only meaningless, it also creates excess effort for your fingers.  Note that this truncation may produce ambiguities in the intepretation of longer words. [Also note that upper and lower case are equivalent.] You are dealing with a fairly stupid parser.`,
 
-        quit
-    prints your score and asks whether you wish
-    to continue playing.
+    actions: ` Among the more obvious of these, such as take, put, drop, etc. Fairly general forms of these may be used, such as pick up, put down, etc.`,
 
-        save
-    saves the state of the game for later continuation.
+    directions: ` north, south, up, down, etc. and their various abbreviations. Other more obscure directions ( land, cross ) are appropriate in only certain situations.`,
 
-        restore
-    restores a saved game.
+    objects: ` Most objects have names and can be referenced by them. `,
 
-        inventory
-    lists the objects in your possession.
+    adjectives: ` Some adjectives are understood and required when there are two objects which can be referenced with the same 'name' (e.g., doors, buttons ). `,
 
-        look
-    prints a description of your surroundings.
+    prepositions:` It may be necessary in some cases to include prepositions, but the parser attempts to handle cases which aren't ambiguous without.  Thus give car to demon will work, as will give demon car . give car demon probably won't do anything interesting. When a preposition is used, it should be appropriate; give car with demon won't parse.`,
 
-        score
-    prints your current score and ranking.
+    sentences: ` The parser understands a reasonable number of syntactic constructions.  In particular, multiple commands (separated by commas) can be placed on the same line. `,
 
-        diagnose
-    reports on your injuries, if any.
-`,
+    ambiguity: ` The parser tries to be clever about what to do in the case of actions which require objects that are not explicitly specified. If there is only one possible object, the parser will assume that it should be used.  Otherwise, the parser will ask. Most questions asked by the parser can be answered.`,
 
-    containment: `
-Some objects can contain other objects.  Many such containers can
-be opened and closed.  The rest are always open.   They may or may
-not be transparent.  For you to access (e.g., take) an object
-which is in a container, the container must be open.  For you
-to see such an object, the container must be either open or
-transparent.  Containers have a capacity, and objects have sizes;
-the number of objects which will fit therefore depends on their
-sizes.  You may put any object you have access to (it need not be
-in your hands) into any other object.  At some point, the program
-will attempt to pick it up if you don't already have it, which
-process may fail if you're carrying too much.  Although containers
-can contain other containers, the program doesn't access more than
-one level down.
-`,
-
-    fighting: `
-Occupants of the dungeon will, as a rule, fight back when
-attacked.  In some cases, they may attack even if unprovoked.
-Useful verbs here are 
-attack
-<villain>
-with
-<weapon>,
-kill ,
-etc.  Knife-throwing may or may not be useful.  You have a
-fighting strength which varies with time.  Being in a fight,
-getting killed, and being injured all lower this strength.
-Strength is regained with time.  Thus, it is not a good idea to
-fight someone immediately after being killed.  Other details
-should become apparent after a few melees or deaths.
-`,
-    command_parser: `
-A command is one line of text terminated by a carriage return.
-For reasons of simplicity, all words are distinguished by their
-first six letters.  All others are ignored.  For example, typing
-disassemble the encyclopedia
-is not only meaningless, it also
-creates excess effort for your fingers.  Note that this truncation
-may produce ambiguities in the intepretation of longer words.
-[Also note that upper and lower case are equivalent.]
-You are dealing with a fairly stupid parser.
-`,
-    actions: `
-Among the more obvious of these, such as
-take, put, drop,
-etc.
-Fairly general forms of these may be used, such as
-pick up, put down,
-etc.
-`,
-    directions: `
-north, south, up, down,
-etc. and their various abbreviations.
-Other more obscure directions
-( land,
-cross )
-are appropriate in only certain situations.
-`,
-    objects: `
-Most objects have names and can be referenced by them.
-`,
-    adjectives: `
-Some adjectives are understood and required when there are
-two objects which can be referenced with the same 'name' (e.g.,
-doors,
-buttons ).
-`,
-    prepositions:`
-It may be necessary in some cases to include prepositions, but
-the parser attempts to handle cases which aren't ambiguous
-without.  Thus
-give car to demon
-will work, as will
-give demon
-car .
-give car demon
-probably won't do anything interesting.
-When a preposition is used, it should be appropriate;
-give car with demon
-won't parse.
-`,
-
-    sentences: `
-The parser understands a reasonable number of syntactic construc-
-tions.  In particular, multiple commands (separated by commas)
-can be placed on the same line.
-`,
-
-    ambiguity: `
-The parser tries to be clever about what to do in the case of
-actions which require objects that are not explicitly specified.
-If there is only one possible object, the parser will assume
-that it should be used.  Otherwise, the parser will ask.
-Most questions asked by the parser can be answered.
-`,
-
-    bugs: `
-For those familiar with the MDL version of the game on the ARPAnet,
-the following is a list of the major incompatabilties:
-
--The first six letters of a word are considered
-significant, instead of the first five.
-
--The syntax for
-tell, answer,
-and
-incant
-is different.
-
--Compound objects are not recognized.
-
--Compound commands can be delimited with comma as well
-as period.
-
-Also, the palantir, brochure, and dead man problems are not
-implemented.
-`
-
+    bugs: ` For those familiar with the MDL version of the game on the ARPAnet, the following is a list of the major incompatabilties: The first six letters of a word are considered significant, instead of the first five. The syntax for tell, answer, and incant is different. Compound objects are not recognized. Compound commands can be delimited with comma as well as period. Also, the palantir, brochure, and dead man problems are not implemented. `
 };
