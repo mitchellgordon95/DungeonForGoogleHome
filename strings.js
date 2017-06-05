@@ -8,7 +8,7 @@ Of special note is a thief (always carrying a large bag) who likes to wander aro
 
     tutorial:  'This is Dungeon, a mostly untouched port of the classic 1980\'s text adventure. You can come back to the tutorial at any time by saying "tutorial". Some other interesting commands are "save", "restore", "quit", and "score". Be careful when saving, since it overrides your last save. To hear the rest of the commands and some other useful things, say "help". To understand the objective of the game, say "info". ',
 
-    main_intent:  'Welcome to Dungeon. We recommend starting the tutorial by saying "tutorial". Otherwise, say "look", to start, or "restore", to load a saved game.',
+    main_intent:  'Welcome to Dungeon. We recommend starting the tutorial by saying "tutorial". Otherwise, say, "look", to start, or, "restore", to load a saved game.',
 
     commands: {
         'brief': ' suppresses printing of long room descriptions for rooms which have been visited. ',

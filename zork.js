@@ -14,7 +14,11 @@ module.exports = function (app) {
     var zork = spawn('./zork', [save_file, input], {cwd: path.normalize('./zork')});
 
     zork.stdout.on('data', (data) => {
-        app.ask(data.toString());
+        var response = data.toString();
+        if (response.includes('I don\'t understand that.')) {
+            response = `${response} Did you say, "${input}"?`;
+        }
+        app.ask(response);
     });
 
     zork.stderr.on('data', (data) => {
