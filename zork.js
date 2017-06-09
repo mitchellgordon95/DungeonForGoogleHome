@@ -16,8 +16,10 @@ module.exports = function (app) {
     zork.stdout.on('data', (data) => {
         var response = data.toString();
         if (response.includes('I don\'t understand that.')) {
-            response = `${response} Did you say, "${input}"?`;
+            response = `${response} I thought you said, "${input}".`;
         }
+
+        response = response + ' What do you do next?';
         app.ask(response);
     });
 
