@@ -257,7 +257,7 @@ canned_responses.do['save'] = function(app) {
     spawn('cp', [conversation_save_file, user_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.askSSML("Saved game.");
+    app.askSSML("Saved game. What do you do next?");
 };
 canned_responses.do['restore'] = function(app) {
     var conversation_save_file = files.getConversationSaveFile(app);
@@ -266,6 +266,6 @@ canned_responses.do['restore'] = function(app) {
     spawn('cp', [user_save_file, conversation_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.askSSML("Restored game.");
+    app.askSSML("Restored game. What do you do next?");
 };
 

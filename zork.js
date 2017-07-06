@@ -3,7 +3,6 @@
 var spawn = require('child_process').spawn;
 var path = require('path');
 var files = require('./files.js');
-var speaking = require('./speaking.js');
 
 // TODO - validate conversation / user ids for injection
 // TODO - delete tmp files on conversation end
@@ -25,7 +24,6 @@ module.exports = function (app) {
     });
 
     zork.stderr.on('data', (data) => {
-        app.tell('Sorry, something went wrong. Try again later.');
-        console.log(`ps stderr: ${data}`);
+        app.tell(data.toString());
     });
 }

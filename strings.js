@@ -8,7 +8,7 @@ Of special note is a thief (always carrying a large bag) who likes to wander aro
 
     tutorial:  'This is Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Some interesting commands are <break time="1s" strength="weak"/>save,<break time="1s" strength="weak"/> restore, <break time="1s" strength="weak"/>,<break time="1s" strength="weak"/> and score. To hear the rest of the commands and some other useful things, say <break time="1s" strength="weak"/>dungeon help. <break time="1s" strength="weak"/>To understand the objective of the game, say <break time="1s" strength="weak"/>info.<break time="1s" strength="weak"/> ',
 
-    main_intent:  'Welcome to Dungeon. Say one of the following: <break time="1s" strength="weak"/> tutorial <break time="1s" strength="weak"/> start <break time="1s" strength="weak"/> or restore.',
+    main_intent:  'Welcome to Dungeon. Say one of the following: <break time="1s" strength="weak"/> tutorial <break time="1s" strength="weak"/> look <break time="1s" strength="weak"/> or restore.',
 
     commands: {
         'brief': ' suppresses printing of long room descriptions for rooms which have been visited. ',
