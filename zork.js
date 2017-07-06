@@ -21,7 +21,7 @@ module.exports = function (app) {
         }
 
         response = response + ' <break time="1s"/>What do you do next?';
-        app.ask(speaking.wrapWithTags(response));
+        app.askSSML(response);
     });
 
     zork.stderr.on('data', (data) => {

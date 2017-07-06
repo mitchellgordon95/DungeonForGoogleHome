@@ -20,6 +20,10 @@ if (!fs.existsSync(files.SAVE_DIRECTORY)) {
 
 expressApp.post('/', function(req, res) {
     const app = new ActionsSdkApp({request: req, response: res});
+    app.askSSML = function (text, dialogState) { app.ask(`<speak> ${text} </speak>`, dialogState); };
+    app.askWithListSSML = function (prompt, list, dialogState) {
+        app.askWithList(`<speak> ${prompt} </speak>`, list, dialogState);
+    };
     const actionMap = new Map();
     actionMap.set(app.StandardIntents.MAIN, input_router.acceptMain);
     actionMap.set(app.StandardIntents.TEXT, input_router.acceptInput);

@@ -15,18 +15,21 @@ const CURRENT_PAGE_KEY = 'current_page';
 const QUIT_READING_KEY = 'quit_reading';
 const NEXT_PAGE_KEY = 'next_page';
 const LIST_OPTIONS_KEY = 'list_options';
+const QUIT_SECTION_KEY = 'quit_section';
 
 module.exports = {
 
     // Accepts an incoming main intent.
     acceptMain: function(app) {
-        app.ask(strings.main_intent);
+        app.askSSML(strings.main_intent);
     },
 
     // Accepts an text input intent.
     acceptInput: function(app) {
         // Check context, do next context state
         var input = app.getRawInput();
+        var dialogState = app.getDialogState();
+
         if (input in canned_responses.tell) {
             app.tell(canned_responses.tell[input]);
         } else if (input in canned_responses.ask) {
@@ -34,7 +37,7 @@ module.exports = {
         } else if (input in canned_responses.do) {
             canned_responses.do[input](app);
         } else if (input in canned_responses.sections) {
-            askSections(app, canned_responses.sections[input], input);
+            askSectionsWithTitle(app, canned_responses.sections[input], input);
         } else {
             zork(app);
         }
@@ -43,12 +46,14 @@ module.exports = {
     // Accepts an incoming option selection intent.
     acceptOption: function(app) {
         var dialogState = app.getDialogState();
-        if (SECTIONS_KEY in dialogState) {
-            handleSelectedSection(app);
-        } else if (PAGES_KEY in dialogState) {
+        // Note: pages must come first because pages can be nested in sections,
+        // but sections cannot be nested in pages.
+        if (PAGES_KEY in dialogState) {
             handlePagesOptionSelected(app);
+        } else if (SECTIONS_KEY in dialogState) {
+            handleSelectedSection(app);
         } else {
-            app.ask('Sorry, something went wrong. Please try again.');
+            app.askSSML('Sorry, something went wrong. Please try again.');
         }
     }
 };
@@ -68,24 +73,30 @@ function buildList(app, sections) {
 // Takes a dictionary and asks the user to select one of the keys
 // Passes the dictionary as the dialog state. Dialog state looks like:
 // {'sections': sections_dict}
-function askSections(app, sections, title, includeOptions) {
-    var list = buildList(app, sections);
-    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, 'list sections').setTitle('List Options'));
-    if (includeOptions) {
-        var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val, idx) {
-            if (idx == Object.keys(sections).length - 1) {
-                return `${acc}<break time='500ms'/>and ${val}`;
-            } else {
-                return `${acc}<break time='500ms'/>${val}`;
-            }
-        });
-    } else {
-        var prompt = `${title} has multiple sections. Say the section name or say "list sections"`;
-    }
+function askSectionsWithTitle(app, sections, title) {
+    var prompt = `${title} has multiple sections. Say the section name or say "list sections"`;
+    askSectionsWithPrompt(app, sections, prompt);
+}
+
+function askSectionsWithOptions(app, sections) {
+    var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val, idx) {
+        if (idx == Object.keys(sections).length - 1) {
+            return `${acc}<break time='500ms'/>and ${val}`;
+        } else {
+            return `${acc}<break time='500ms'/>${val}`;
+        }
+    });
+    askSectionsWithPrompt(app, sections, prompt);
+}
+
+function askSectionsWithPrompt(app, sections, prompt) {
     var dialogState = {};
     dialogState[SECTIONS_KEY] = sections;
-    app.askWithList(
-        speaking.wrapWithTags(prompt),
+    var list = buildList(app, sections);
+    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, ['list sections', 'list', 'sections']).setTitle('List Options'));
+    list.addItems(app.buildOptionItem(QUIT_SECTION_KEY, ['no', 'quit', 'leave', 'none']).setTitle('Quit Section'));
+    app.askWithListSSML(
+        prompt,
         list,
         // Send the sections dict along with the request as the dialog state,
         // so we know what to say back when the user selects one of the options
@@ -98,21 +109,24 @@ function handleSelectedSection(app) {
     var selectedSectionName = app.getSelectedOption();
     var dialogState = app.getDialogState();
     var sections = dialogState[SECTIONS_KEY];
+    var input = app.getRawInput();
 
-    if (app.getRawInput() === 'list sections') {
-        askSections(app, sections, null, true);
+    if (app.getSelectedOption() == LIST_OPTIONS_KEY) {
+        askSectionsWithOptions(app, sections);
+    }
+    if (app.getSelectedOption() == QUIT_SECTION_KEY) {
+        app.askSSML('Ok, returning to game.');
     }
     if (selectedSectionName in sections) {
         var selectedSection = sections[selectedSectionName];
 
         if (typeof selectedSection === 'string' || selectedSection instanceof String) {
-            // TODO - Read more?
             autoPage(app, selectedSection);
         } else {
-            askSections(app, selectedSection, selectedSectionName);
+            askSectionsWithTitle(app, selectedSection, selectedSectionName);
         }
     } else {
-        app.ask('That wasn\'t one of the sections. Returning to game.');
+        app.askSSML('That wasn\'t one of the sections. Returning to game.');
     }
 }
 
@@ -121,16 +135,17 @@ function handleSelectedSection(app) {
 // Dialog state looks like {'current_page': 0, 'pages': ['next page', 'next page', 'next page' ...]}
 // Asks the user to select 'next' or 'quit reading';
 // Use handlePagesOptionSelected() to handle a response from the user.
-// TODO - sentences, use on zork output
+// TODO - smarter version, use on zork output
 function autoPage(app, string) {
     var pages = string.split('\n');
+    var dialogState = app.getDialogState();
 
     pages = pages.filter(function(page) {
         return /\S/.test(page);
     });
 
     if (pages.length === 1) {
-        app.ask(pages[0]);
+        app.askSSML(pages[0], dialogState);
     } else {
         for (var i = 0; i < pages.length; ++i) {
             var header = `Page ${number2words.toWords(i+1)} of ${number2words.toWords(pages.length)}. `;
@@ -141,10 +156,9 @@ function autoPage(app, string) {
             }
         }
 
-        var dialogState = {};
         dialogState[PAGES_KEY] = pages;
         dialogState[CURRENT_PAGE_KEY] = 0;
-        app.askWithList(
+        app.askWithListSSML(
             pages[0],
             app.buildList('Page Reader')
                 .addItems([
@@ -162,7 +176,11 @@ function handlePagesOptionSelected(app) {
     var dialogState = app.getDialogState();
 
     if (selectedOption == QUIT_READING_KEY) {
-        app.ask('Ok, returning to game.');
+        if (SECTIONS_KEY in dialogState) {
+            askSectionsWithPrompt(app, dialogState[SECTIONS_KEY], `Ok, would you like to read a different section?`);
+        } else {
+            app.askSSML('Ok, returning to game.');
+        }
     } else {
         // Should be NEXT_PAGE_KEY
         var currentPage = dialogState[CURRENT_PAGE_KEY];
@@ -172,13 +190,17 @@ function handlePagesOptionSelected(app) {
 
         // If the next page is the final page
         if (nextPage == pages.length - 1) {
-            // Ask the final page
-            app.ask(pages[nextPage]);
+            // if we came from a section selection dialog, resume that
+            if (SECTIONS_KEY in dialogState) {
+                askSectionsWithPrompt(app, dialogState[SECTIONS_KEY], `${pages[nextPage]} Which section would you like to read next?`);
+            } else {
+                // Ask the final page
+                app.askSSML(pages[nextPage]);
+            }
         } else {
-            dialogState = {};
             dialogState[PAGES_KEY] = pages;
             dialogState[CURRENT_PAGE_KEY] = nextPage;
-            app.askWithList(
+            app.askWithListSSML(
                 pages[nextPage],
                 app.buildList('Page Reader')
                     .addItems([
@@ -214,7 +236,7 @@ var talking_to_dungeon = {
     'containment': strings.containment,
     'fighting': strings.fighting,
     'actions': strings.actions,
-    'command parser': strings.command_parser,
+    'command parser': strings.command_parser
 };
 canned_responses.sections['dungeon help'] = {
     'dungeon commands': strings.commands,
@@ -230,7 +252,7 @@ canned_responses.do['save'] = function(app) {
     spawn('cp', [conversation_save_file, user_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.ask("Saved game.");
+    app.askSSML("Saved game.");
 };
 canned_responses.do['restore'] = function(app) {
     var conversation_save_file = files.getConversationSaveFile(app);
@@ -239,6 +261,6 @@ canned_responses.do['restore'] = function(app) {
     spawn('cp', [user_save_file, conversation_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.ask("Restored game.");
+    app.askSSML("Restored game.");
 };
 
