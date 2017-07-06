@@ -8,6 +8,7 @@ var files = require('./files.js');
 // TODO - delete tmp files on conversation end
 module.exports = function (app) {
     var input = app.getRawInput();
+    input = input.replace(/(south|north).?(east|west)/i, "$1 $2");
     var save_file = files.getConversationSaveFile(app);
 
     // Zork needs to be run in its own directory for file dependencies
@@ -15,6 +16,7 @@ module.exports = function (app) {
 
     zork.stdout.on('data', (data) => {
         var response = data.toString();
+
         if (response.includes('I don\'t understand that.')) {
             response = `${response} I thought you said, "${input}". Returning to game.`;
         }
