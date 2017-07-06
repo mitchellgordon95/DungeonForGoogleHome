@@ -74,16 +74,16 @@ function buildList(app, sections) {
 // Passes the dictionary as the dialog state. Dialog state looks like:
 // {'sections': sections_dict}
 function askSectionsWithTitle(app, sections, title) {
-    var prompt = `${title} has multiple sections. Say the section name or say "list sections"`;
+    var prompt = `${title} has multiple sections. Say the section name or say "list"`;
     askSectionsWithPrompt(app, sections, prompt);
 }
 
 function askSectionsWithOptions(app, sections) {
     var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val, idx) {
         if (idx == Object.keys(sections).length - 1) {
-            return `${acc}<break time='500ms'/>and ${val}`;
+            return `${acc}<break time='500ms' strength='weak'/>and ${val}`;
         } else {
-            return `${acc}<break time='500ms'/>${val}`;
+            return `${acc}<break time='500ms'strength='weak'/>${val}`;
         }
     });
     askSectionsWithPrompt(app, sections, prompt);
@@ -93,8 +93,8 @@ function askSectionsWithPrompt(app, sections, prompt) {
     var dialogState = {};
     dialogState[SECTIONS_KEY] = sections;
     var list = buildList(app, sections);
-    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, ['list sections', 'list', 'sections']).setTitle('List Options'));
-    list.addItems(app.buildOptionItem(QUIT_SECTION_KEY, ['no', 'quit', 'leave', 'none']).setTitle('Quit Section'));
+    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, ['list sections', 'list', 'sections', 'section', 'list section']).setTitle('List Options'));
+    list.addItems(app.buildOptionItem(QUIT_SECTION_KEY, ['no', 'quit', 'leave', 'none', 'stop']).setTitle('Quit Section'));
     app.askWithListSSML(
         prompt,
         list,
@@ -115,7 +115,7 @@ function handleSelectedSection(app) {
         askSectionsWithOptions(app, sections);
     }
     if (app.getSelectedOption() == QUIT_SECTION_KEY) {
-        app.askSSML('Ok, returning to game.');
+        app.askSSML('Ok, returning to game. What do you do next?');
     }
     if (selectedSectionName in sections) {
         var selectedSection = sections[selectedSectionName];
@@ -145,7 +145,12 @@ function autoPage(app, string) {
     });
 
     if (pages.length === 1) {
-        app.askSSML(pages[0], dialogState);
+        // if we came from a section selection dialog, resume that
+        if (SECTIONS_KEY in dialogState) {
+            askSectionsWithPrompt(app, dialogState[SECTIONS_KEY], `${pages[0]} Which section would you like to read next?`);
+        } else {
+            app.askSSML(pages[0]);
+        }
     } else {
         for (var i = 0; i < pages.length; ++i) {
             var header = `Page ${number2words.toWords(i+1)} of ${number2words.toWords(pages.length)}. `;
@@ -163,7 +168,7 @@ function autoPage(app, string) {
             app.buildList('Page Reader')
                 .addItems([
                     app.buildOptionItem(NEXT_PAGE_KEY, ['yes', 'next', 'next page']).setTitle('Next Page'),
-                    app.buildOptionItem(QUIT_READING_KEY, ['no', 'stop', 'quit', 'stop reading', 'quit reading']).setTitle('Quit Reading')
+                    app.buildOptionItem(QUIT_READING_KEY, ['no', 'stop', 'quit', 'stop reading', 'quit reading', 'stop']).setTitle('Quit Reading')
                 ]),
             dialogState
         );
