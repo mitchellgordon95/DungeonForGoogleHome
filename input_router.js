@@ -5,6 +5,7 @@ var path = require('path');
 var number2words = require('number-to-words');
 var files = require('./files.js');
 var strings = require('./strings.js');
+var speaking = require('./speaking.js');
 var zork = require('./zork.js');
 
 const SECTIONS_KEY = 'sections';
@@ -33,7 +34,7 @@ module.exports = {
         } else if (input in canned_responses.do) {
             canned_responses.do[input](app);
         } else if (input in canned_responses.sections) {
-            askSections(app, canned_responses.sections[input]);
+            askSections(app, canned_responses.sections[input], input);
         } else {
             zork(app);
         }
@@ -67,16 +68,24 @@ function buildList(app, sections) {
 // Takes a dictionary and asks the user to select one of the keys
 // Passes the dictionary as the dialog state. Dialog state looks like:
 // {'sections': sections_dict}
-function askSections(app, sections, prompt) {
+function askSections(app, sections, title, includeOptions) {
     var list = buildList(app, sections);
-    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, 'list').setTitle('List Options'));
-    if (typeof prompt === 'undefined') {
-        prompt = 'This text has multiple sections. Say the section you\'d like to hear, or say "list" to hear the sections.';
+    list.addItems(app.buildOptionItem(LIST_OPTIONS_KEY, 'list sections').setTitle('List Options'));
+    if (includeOptions) {
+        var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val, idx) {
+            if (idx == Object.keys(sections).length - 1) {
+                return `${acc}<break time='500ms'/>and ${val}`;
+            } else {
+                return `${acc}<break time='500ms'/>${val}`;
+            }
+        });
+    } else {
+        var prompt = `${title} has multiple sections. Say the section name or say "list sections"`;
     }
     var dialogState = {};
     dialogState[SECTIONS_KEY] = sections;
     app.askWithList(
-        prompt,
+        speaking.wrapWithTags(prompt),
         list,
         // Send the sections dict along with the request as the dialog state,
         // so we know what to say back when the user selects one of the options
@@ -90,12 +99,8 @@ function handleSelectedSection(app) {
     var dialogState = app.getDialogState();
     var sections = dialogState[SECTIONS_KEY];
 
-    if (app.getRawInput() === 'list') {
-        var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val) {
-            return `${acc}. ${val}`;
-        });
-
-        askSections(app, sections, prompt);
+    if (app.getRawInput() === 'list sections') {
+        askSections(app, sections, null, true);
     }
     if (selectedSectionName in sections) {
         var selectedSection = sections[selectedSectionName];
@@ -104,7 +109,7 @@ function handleSelectedSection(app) {
             // TODO - Read more?
             autoPage(app, selectedSection);
         } else {
-            askSections(app, selectedSection);
+            askSections(app, selectedSection, selectedSectionName);
         }
     } else {
         app.ask('That wasn\'t one of the sections. Returning to game.');
@@ -170,7 +175,7 @@ function handlePagesOptionSelected(app) {
             // Ask the final page
             app.ask(pages[nextPage]);
         } else {
-            var dialogState = {};
+            dialogState = {};
             dialogState[PAGES_KEY] = pages;
             dialogState[CURRENT_PAGE_KEY] = nextPage;
             app.askWithList(
@@ -205,19 +210,15 @@ canned_responses.ask['tutorial'] = strings.tutorial;
 canned_responses.ask['info'] = strings.info;
 
 // sections. Each key in the object is a section. Nesting works.
-canned_responses.sections['help'] = {
-    'dungeon commands': strings.commands,
+var talking_to_dungeon = {
     'containment': strings.containment,
     'fighting': strings.fighting,
-    'command parser': strings.command_parser,
     'actions': strings.actions,
-    'directions': strings.directions,
-    'objects': strings.objects,
-    'adjectives': strings.adjectives,
-    'prepositions': strings.prepositions,
-    'sentences': strings.sentences,
-    'ambiguity': strings.ambiguity,
-    'bugs': strings.bugs
+    'command parser': strings.command_parser,
+};
+canned_responses.sections['dungeon help'] = {
+    'dungeon commands': strings.commands,
+    'talking to dungeon': talking_to_dungeon
 };
 
 

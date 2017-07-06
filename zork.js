@@ -3,6 +3,7 @@
 var spawn = require('child_process').spawn;
 var path = require('path');
 var files = require('./files.js');
+var speaking = require('./speaking.js');
 
 // TODO - validate conversation / user ids for injection
 // TODO - delete tmp files on conversation end
@@ -16,11 +17,11 @@ module.exports = function (app) {
     zork.stdout.on('data', (data) => {
         var response = data.toString();
         if (response.includes('I don\'t understand that.')) {
-            response = `${response} I thought you said, "${input}".`;
+            response = `${response} I thought you said, "${input}". Returning to game.`;
         }
 
-        response = response + ' What do you do next?';
-        app.ask(response);
+        response = response + ' <break time="1s"/>What do you do next?';
+        app.ask(speaking.wrapWithTags(response));
     });
 
     zork.stderr.on('data', (data) => {
