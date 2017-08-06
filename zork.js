@@ -9,7 +9,7 @@ var files = require('./files.js');
 module.exports = function (app) {
     var input = app.getRawInput();
     input = input.replace(/(south|north).?(east|west)/i, "$1 $2");
-    var save_file = files.getConversationSaveFile(app);
+    var save_file = files.getUserSaveFile(app);
 
     // Zork needs to be run in its own directory for file dependencies
     var zork = spawn('./zork', [save_file, input], {cwd: path.normalize('./zork')});
