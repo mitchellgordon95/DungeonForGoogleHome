@@ -13,9 +13,6 @@ const QUIT_SECTION_KEY = 'quit_section';
 
 
 var reading = module.exports = {
-    handleInput: function(app) {
-        var input = app.getRawInput();
-    },
     handleOptionSelected: function(app) {
         var dialogState = app.getDialogState();
         // Note: pages must come first because pages can be nested in sections,

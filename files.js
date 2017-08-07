@@ -5,10 +5,10 @@ const SAVE_DIRECTORY = "saved_games";
 
 module.exports = {
     SAVE_DIRECTORY: SAVE_DIRECTORY,
-    getConversationSaveFile: function(app) {
-        return path.resolve(SAVE_DIRECTORY + "/user-" + app.getUser().user_id + "-conversation-" + app.getConversationId());
+    getCheckpointSaveFile: function(app) {
+        return path.resolve(SAVE_DIRECTORY + "/user-" + app.getUser().user_id + "-checkpoint");
     },
     getUserSaveFile: function(app) {
         return path.resolve(SAVE_DIRECTORY + "/user-" + app.getUser().user_id);
     }
-}
+};

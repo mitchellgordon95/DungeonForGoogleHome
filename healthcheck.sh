@@ -12,5 +12,5 @@ if [[ $? != 0 ]]; then
     echo "dungeon.mitchgordon.me" | mail -s "Site down. Trying to bring it back up." mitchell.gordon95@gmail.com
     cd "${BASH_SOURCE[0]}"
     echo "Trying to bring it back up"
-    nohup nodejs index.js &
+    nohup node index.js &
 fi

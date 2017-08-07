@@ -1,5 +1,7 @@
 'use strict';
 
+var fs = require('fs');
+var files = require('./files.js');
 var strings = require('./strings.js');
 var reading = require('./reading.js');
 var easy_answers = require('./easy_answers.js');
@@ -9,7 +11,13 @@ module.exports = {
 
     // Accepts an incoming main intent.
     acceptMain: function(app) {
-        app.askSSML(strings.main_intent);
+        fs.access(files.getUserSaveFile(app), fs.constants.R_OK, (err) => {
+            if (err) {
+                app.askSSML(strings.main_intent);
+            } else {
+                zork.doReturningUserLook(app);
+            }
+        });
     },
 
     // Accepts an text input intent.
@@ -25,7 +33,7 @@ module.exports = {
         } else if (input in easy_answers.sections) {
             reading.askSectionsWithTitle(app, easy_answers.sections[input], input);
         } else {
-            zork(app);
+            zork.handleInput(app);
         }
     },
 

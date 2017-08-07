@@ -36,21 +36,25 @@ easy_answers.sections['dungeon help'] = {
 
 
 // do
-easy_answers.do['save'] = function(app) {
-    var conversation_save_file = files.getConversationSaveFile(app);
+easy_answers.do['checkpoint'] = function(app) {
+    var checkpoint_save_file = files.getCheckpointSaveFile(app);
     var user_save_file = files.getUserSaveFile(app);
 
-    spawn('cp', [conversation_save_file, user_save_file]);
+    spawn('cp', [user_save_file, checkpoint_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.askSSML("Saved game. What do you do next?");
+    app.askSSML("Overwrote your last checkpoint with current game. What do you do next?");
 };
+// This is important because SAVE is an actual dungeon command that will have unintended side-effects
+// if given to the zork executable
+easy_answers.do['save'] = easy_answers.do['checkpoint'];
 easy_answers.do['restore'] = function(app) {
-    var conversation_save_file = files.getConversationSaveFile(app);
+    var checkpoint_save_file = files.getCheckpointSaveFile(app);
     var user_save_file = files.getUserSaveFile(app);
 
-    spawn('cp', [user_save_file, conversation_save_file]);
+    // TODO - check has checkpoint
+    spawn('cp', [checkpoint_save_file, user_save_file]);
     // TODO - error handling
     // TODO - confirm.
-    app.askSSML("Restored game. What do you do next?");
+    app.askSSML("Restored game to last checkpoint. What do you do next?");
 };
