@@ -29,7 +29,7 @@ var talking_to_dungeon = {
     'actions': strings.actions,
     'command parser': strings.command_parser
 };
-easy_answers.sections['dungeon help'] = {
+easy_answers.sections['help'] = {
     'dungeon commands': strings.commands,
     'talking to dungeon': talking_to_dungeon
 };
