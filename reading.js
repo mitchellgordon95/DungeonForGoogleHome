@@ -94,9 +94,9 @@ function buildList(app, sections) {
 function askSectionsWithOptions(app, sections) {
     var prompt = 'The options are: ' + Object.keys(sections).reduce(function(acc, val, idx) {
         if (idx == Object.keys(sections).length - 1) {
-            return `${acc}<break time='500ms' strength='weak'/>and ${val}`;
+            return `${acc}<break time='1000ms' strength='weak'/>and ${val}`;
         } else {
-            return `${acc}<break time='500ms'strength='weak'/>${val}`;
+            return `${acc}<break time='1000ms'strength='weak'/>${val}`;
         }
     });
     askSectionsWithPrompt(app, sections, prompt);
