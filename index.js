@@ -1,5 +1,3 @@
-'use strict';
-
 const hostname = 'dungeon.mitchgordon.me';
 const port = '443';
 const input_router = require('./input_router.js');

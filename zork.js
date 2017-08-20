@@ -1,18 +1,14 @@
-'use strict';
-
 var spawn = require('child_process').spawn;
 var path = require('path');
 var files = require('./files.js');
 
 // TODO - validate conversation / user ids for injection?
-module.exports = {
-    doReturningUserLook: function (app) {
-        doCommand(app, true);
-    },
-    handleInput: function (app) {
-        doCommand(app, false);
-    }
-};
+exports.doReturningUserLook = function(app) {
+    doCommand(app, true);
+}
+exports.handleInput = function(app) {
+    doCommand(app, false);
+}
 
 function doCommand(app, isReturningUserLook) {
     var command = isReturningUserLook ? "look" : app.getRawInput();
