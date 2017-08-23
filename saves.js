@@ -21,3 +21,7 @@ exports.restore = function(app) {
     // TODO - confirm.
     app.askSSML("Restored game to last checkpoint. What do you do next?");
 };
+
+exports.restart = function(app) {
+    app.askSSML(`Sorry, we haven't implemented this command yet. Try again later.`);
+}

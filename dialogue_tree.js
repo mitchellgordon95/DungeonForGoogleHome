@@ -12,6 +12,7 @@ var root = module.exports = new DialogueNode('root')
     .registerChildWithAction('quit', (app) => app.tell('Goodbye!'))
     .registerChildWithAction('restore', saves.restore)
     // end note.
+    .registerChildWithAction('restart', saves.restart)
     .registerChildWithText('tutorial', strings.main_intent)
     .registerChildWithAction('checkpoint', saves.checkpoint);
 
