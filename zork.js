@@ -1,6 +1,7 @@
 var spawn = require('child_process').spawn;
 var path = require('path');
 var files = require('./files.js');
+var reading = require('./reading.js');
 
 // TODO - validate conversation / user ids for injection?
 exports.doReturningUserLook = function(app) {
@@ -31,7 +32,16 @@ function doCommand(app, isReturningUserLook) {
         }
 
         response = response + ' <break time="1s"/>What do you do next?';
-        app.askSSML(response);
+
+
+        var pages = reading.makePagesForZorkOutput(response);
+        if (pages.length === 1) {
+            app.askSSML(pages[0]);
+        } else {
+            dialogue_state[reading.CURRENT_PAGE_KEY] = 0;
+            dialogue_state[reading.PAGES_KEY] = pages;
+            app.askWithListSSML(pages[0], reading.makePagesOptions(app), dialogue_state);
+        }
     });
 
     zork.stderr.on('data', (data) => {

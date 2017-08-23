@@ -8,8 +8,9 @@ var list_keys = require('./utils.js').list_keys;
 
 const RETURN_TO_GAME_KEY = 'return_to_game';
 const BACK_KEY = 'back';
-const CURRENT_PAGE_KEY = 'current_page';
 const PATH_KEY = 'path';
+const CURRENT_PAGE_KEY = reading.CURRENT_PAGE_KEY;
+const PAGES_KEY = reading.PAGES_KEY;
 
 // Accepts an incoming main intent.
 exports.acceptMain = function (app) {
@@ -62,7 +63,7 @@ exports.acceptOption = function(app) {
     // Reading pages always takes priority
     if (CURRENT_PAGE_KEY in dialogue_state && selected_option != reading.QUIT_READING_KEY) {
         var next_page_index = dialogue_state[CURRENT_PAGE_KEY] + 1;
-        var pages = reading.makePages(current_node.text);
+        var pages = dialogue_state[PAGES_KEY];
         if(pages.length - 1 === next_page_index) {
             var [parent, parent_path] = backtrack(dialogue_state[PATH_KEY]);
             var next_page = pages[next_page_index];
@@ -121,6 +122,7 @@ function doNode(app, node, path=[], say_first) {
             doNode(app, parent, parent_path, pages[0]);
         } else {
             dialogue_state[CURRENT_PAGE_KEY] = 0;
+            dialogue_state[PAGES_KEY] = pages;
             app.askWithListSSML(pages[0], reading.makePagesOptions(app), dialogue_state);
         }
     }

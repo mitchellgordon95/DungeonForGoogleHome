@@ -19,7 +19,6 @@ var root = module.exports = new DialogueNode('root')
 root.getChildByKey('help')
     .registerChildWithText('objective', strings.info, ['game objective', 'objective of game', 'objective of the game'])
     .registerChildWithText('commands', `The commands are ${list_keys(strings.commands)}. Say a command to hear more about it or say return to return to the game.`, ['game commands'])
-// TODO
     .registerChildWithText('how to play', strings.how_to_play, ['play', 'how', 'how to']);
 
 for (var command in strings.commands) {
