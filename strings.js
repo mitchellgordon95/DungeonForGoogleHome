@@ -6,7 +6,7 @@ In addition to valuables, the dungeon contains various objects which may or may 
 To determine how successful you have been, a score is kept. When you find a valuable object and pick it up, you receive a certain number of points, which depends on the difficulty of finding the object.  You receive extra points for transporting the treasure safely to the living room and placing it in the trophy case.  In addition, some particularly interesting rooms have a value associated with visiting them.
 Of special note is a thief (always carrying a large bag) who likes to wander around in the dungeon (he has never been seen by the light of day).  He likes to take things.  Since he steals for pleasure rather than profit and is somewhat sadistic, he only takes things which you have seen.  Although he prefers valuables, sometimes in his haste he may take something which is worthless.  From time to time, he examines his take and discards objects which he doesn't like.  He may occasionally stop in a room you are visiting, but more often he just wanders through and rips you off (he is a skilled pickpocket).`,
 
-    main_intent:  'This is Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Some interesting commands are look,<break time="1s" strength="weak"/> checkpoint,<break time="1s" strength="weak"/> restore, <break time="1s" strength="weak"/> and score. To hear the rest of the commands and some other useful things, say <break time="1s" strength="weak"/> help <break time="1s" strength="weak"/> at any time during the game.',
+    main_intent:  'Welcome to Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Say help at any time during the game to get some help. Otherwise, say look to look around.',
 
     help_prompt: 'This is the help section. You can hear about game commands, objective of the game, or how to play.',
 
@@ -14,14 +14,14 @@ Of special note is a thief (always carrying a large bag) who likes to wander aro
         'brief': ' suppresses printing of long room descriptions for rooms which have been visited. ',
         'superbrief': ' suppresses printing of long room descriptions for all rooms. ',
         'verbose': ' restores long descriptions. ',
-        'quit': ' quits the game for now. ',
         'checkpoint': ' creates a checkpoint to which you can return to by saying restore. ',
         'restore': ' restores your game to the last checkpoint you made. ',
         'restart': ' returns you to the beginning of the game. ',
         'inventory': ' lists the objects in your possession. ',
         'look': ' prints a description of your surroundings. ',
         'score': ' prints your current score and ranking. ',
-        'diagnose': ' reports on your injuries, if any. '
+        'diagnose': ' reports on your injuries, if any. ',
+        'quit': ' quits the game for now. '
     },
 
     how_to_play: `This is a simple text parser from the 1980's. For reasons of simplicity, all words are distinguished by their first six letters. You are dealing with a fairly stupid parser. That being said, the game understands some complex and random things. For example, you can pick up, take, or put down things. You can look around. You can go north, south, east, west, up, or down. Sometimes you can cross bridges or enter doors. You can do many other things not listed here. Would you like to hear more? You can hear about containment, fighting, or ambiguity.`,

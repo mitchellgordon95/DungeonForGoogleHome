@@ -38,6 +38,7 @@ function doCommand(app, isReturningUserLook) {
         if (pages.length === 1) {
             app.askSSML(pages[0]);
         } else {
+            var dialogue_state = {};
             dialogue_state[reading.CURRENT_PAGE_KEY] = 0;
             dialogue_state[reading.PAGES_KEY] = pages;
             app.askWithListSSML(pages[0], reading.makePagesOptions(app), dialogue_state);

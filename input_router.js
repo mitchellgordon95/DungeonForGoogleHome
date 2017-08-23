@@ -75,7 +75,9 @@ exports.acceptOption = function(app) {
             return;
         }
     } else if (CURRENT_PAGE_KEY in dialogue_state){
-        app.askSSML('Ok, returning to game. What do you do next?');
+        // We're quitting reading
+        var [parent, parent_path] = backtrack(dialogue_state[PATH_KEY]);
+        doNode(app, parent, parent_path, 'Ok.');
         return;
     }
 
