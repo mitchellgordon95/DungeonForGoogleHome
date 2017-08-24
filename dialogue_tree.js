@@ -31,4 +31,4 @@ root.getChildByKey('help')
     .getChildByKey('how to play')
     .registerChildWithText('ambiguity', strings.ambiguity)
     .registerChildWithText('fighting', strings.fighting)
-    .registerChildWithText('command parser', strings.command_parser);
+    .registerChildWithText('containment', strings.containment);
