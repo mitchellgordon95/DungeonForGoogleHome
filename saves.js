@@ -23,5 +23,7 @@ exports.restore = function(app) {
 };
 
 exports.restart = function(app) {
-    app.askSSML(`Sorry, we haven't implemented this command yet. Try again later.`);
-}
+    var user_save_file = files.getUserSaveFile(app);
+    spawn('rm', [user_save_file]);
+    app.askSSML(`Ok, restarted the game. What do you do next?`);
+};

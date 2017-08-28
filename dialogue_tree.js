@@ -12,9 +12,13 @@ var root = module.exports = new DialogueNode('root')
     .registerChildWithAction('quit', (app) => app.tell('Goodbye!'))
     .registerChildWithAction('restore', saves.restore)
     // end note.
-    .registerChildWithAction('restart', saves.restart)
+    .registerChildWithText('restart', 'Are you sure you want to restart? This will return you to the beginning of the game, but it will not erase your checkpoint. Say yes or no.')
     .registerChildWithText('tutorial', strings.main_intent)
     .registerChildWithAction('checkpoint', saves.checkpoint);
+
+root.getChildByKey('restart')
+    .registerChildWithAction('no', (app) => app.askSSML('Okay, returning to game. What do you do next?'))
+    .registerChildWithAction('yes', saves.restart);
 
 root.getChildByKey('help')
     .registerChildWithText('objective', strings.info, ['game objective', 'objective of game', 'objective of the game'])
