@@ -31,13 +31,12 @@ function doCommand(app, isReturningUserLook) {
             response = `${response} I thought you said, "${command}". Returning to game.`;
         }
 
-        response = response + ' <break time="1s"/>What do you do next?';
-
-
         var pages = reading.makePagesForZorkOutput(response);
         if (pages.length === 1) {
-            app.askSSML(pages[0]);
+            response = response + ' <break time="1s"/>What do you do next?';
+            app.askSSML(response);
         } else {
+            // Note: the page handler should add "What do you do next" by itself
             var dialogue_state = {};
             dialogue_state[reading.CURRENT_PAGE_KEY] = 0;
             dialogue_state[reading.PAGES_KEY] = pages;

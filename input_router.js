@@ -143,8 +143,12 @@ function buildList(app, node) {
 }
 
 function backtrack(path) {
-    var new_path = path.slice(0, -1);
-    return [followPath(new_path), new_path];
+    if (path) {
+        new_path = path.slice(0, -1);
+        return [followPath(new_path), new_path];
+    } else {
+        return [dialogue_tree, []];
+    }
 }
 
 function followPath(path) {

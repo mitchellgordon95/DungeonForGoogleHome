@@ -41,7 +41,7 @@ var reading = module.exports = {
 
         var pages = [];
         for (var idx = 0; idx < sentences.length; idx++) {
-            if (idx % 12 == 0) {
+            if (idx % 8 == 0) {
                 pages.push(sentences[idx]);
             } else {
                 pages[pages.length - 1] += " " + sentences[idx];
