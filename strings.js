@@ -6,7 +6,7 @@ In addition to valuables, the dungeon contains various objects which may or may 
 To determine how successful you have been, a score is kept. When you find a valuable object and pick it up, you receive a certain number of points, which depends on the difficulty of finding the object.  You receive extra points for transporting the treasure safely to the living room and placing it in the trophy case.  In addition, some particularly interesting rooms have a value associated with visiting them.
 Of special note is a thief (always carrying a large bag) who likes to wander around in the dungeon (he has never been seen by the light of day).  He likes to take things.  Since he steals for pleasure rather than profit and is somewhat sadistic, he only takes things which you have seen.  Although he prefers valuables, sometimes in his haste he may take something which is worthless.  From time to time, he examines his take and discards objects which he doesn't like.  He may occasionally stop in a room you are visiting, but more often he just wanders through and rips you off (he is a skilled pickpocket).`,
 
-    main_intent:  'Welcome to Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Say help at any time during the game to get some help. Otherwise, say look to look around.',
+    main_intent:  'Welcome to Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Say help at any time during the game to get some help. Otherwise, say look to see your surroundings.',
 
     help_prompt: 'This is the help section. You can hear about game commands, objective of the game, or how to play.',
 
