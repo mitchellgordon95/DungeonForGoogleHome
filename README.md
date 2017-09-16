@@ -7,7 +7,7 @@ should work with any google assistant enabled device.
 ## What is this?
 It's [Zork](https://en.wikipedia.org/wiki/Zork), but on Google Assistant. Zork is "one of the earliest interactive fiction computer games," beloved by many. It's a treasure-hunting, troll-fighting text-adventure that you control using natural language. The natural language is parsed by a sometimes dubious NLP system developed by some MIT guys in the 80s. 
 
-I'm using open source code kindly provided by Infocom and [posted by devshane](https://github.com/devshane/zork)). I believe this particular version is called Dungeon, which is what Zork was before Infocom got it and transformed it into Zork I, II, and III. 
+I'm using open source code kindly provided by Infocom and [posted by devshane](https://github.com/devshane/zork). I believe this particular version is called Dungeon, which is what Zork was before Infocom got it and transformed it into Zork I, II, and III. 
 
 ## How does it work?
 First, I modified the original zork executable  to be a command line utility, which accepts a save file name and a user command. The utility, when invoked, loads the save file, does the command, and outputs some game text to stdout. It then overwrites the save file with the new state.
