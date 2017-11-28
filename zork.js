@@ -27,7 +27,7 @@ function doCommand(app, isReturningUserLook) {
         var response = data.toString();
 
         if (isReturningUserLook) {
-            response = `Welcome back to dungeon. ${response}`;
+            response = `Welcome back to dungeon. Please send any requests or complaints to dungeon rpg 99 at gmail dot com. ${response}`;
         }
 
         if (response.includes('I don\'t understand that.')) {
