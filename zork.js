@@ -57,4 +57,13 @@ function doCommand(app, isReturningUserLook) {
     zork.stderr.on('data', (data) => {
         app.tell(data.toString());
     });
+
+    function killChild() {
+        zork.kill('SIGINT');
+        process.exit();
+    }
+
+    process.on('exit', killChild);
+    process.on('SIGINT', killChild);
+    process.on('uncaughtException', killChild);
 }
