@@ -39,6 +39,11 @@ var reading = module.exports = {
     makePagesForZorkOutput: function(string) {
         var sentences = string.match(/[^\.!\?]+[\.!\?]+/g);
 
+        // If there is no punctuation, the regex will not match and return null.
+        if (!sentences) {
+            return [string];
+        }
+
         var pages = [];
         for (var idx = 0; idx < sentences.length; idx++) {
             if (idx % 8 == 0) {
