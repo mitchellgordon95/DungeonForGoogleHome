@@ -8,7 +8,7 @@ Of special note is a thief (always carrying a large bag) who likes to wander aro
 
     main_intent:  'Welcome to Dungeon, a mostly untouched port of the classic 1980\'s text adventure. Say help at any time during the game to get some help. Otherwise, say look.',
 
-    help_prompt: 'This is the help section. You can hear about game commands, objective of the game, or how to play.',
+    help_prompt: 'This is the help section. You can hear about how to play, objective of the game, or other commands.',
 
     commands: {
         'brief': ' suppresses printing of long room descriptions for rooms which have been visited. ',
