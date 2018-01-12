@@ -20,6 +20,13 @@ function doCommand(app, isReturningUserLook) {
     command = command.replace(/(south|north).?(east|west)/i, "$1 $2");
     var save_file = files.getUserSaveFile(app);
 
+    // Make sure we don't pass an empty string to zork / just whitespace to zork. Doing so causes
+    // the process to spin forever.
+    if ((!command || command.length === 0 || /^\s*$/.test(command))) {
+        app.askSSML(`Sorry, I didn't understand that. What do you do next?`, dialogue_state); 
+        return;
+    }
+
     // Zork needs to be run in its own directory for file dependencies
     var zork = spawn('./zork', [save_file, command], {cwd: path.normalize('./zork')});
 
@@ -32,7 +39,7 @@ function doCommand(app, isReturningUserLook) {
 
         if (response.includes('I don\'t understand that.')) {
             if (dialogue_state[WRONG_LAST_TIME_KEY]) {
-                response = `${response} I thought you said, "${command}". Dungeon is an old game that only understands simple commands.  If you haven't played before, we recommend browsinging the help section by saying help. Returning to game. What do you do next?`;
+                response = `${response} I thought you said, "${command}". Dungeon is an old game that only understands simple commands.  If you haven't played before, we recommend browsing the help section by saying help. Returning to game. What do you do next?`;
                 app.askSSML(response);
             } else {
                 response = `${response} I thought you said, "${command}". Returning to game. What do you do next?`;
