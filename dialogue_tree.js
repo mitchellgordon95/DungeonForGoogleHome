@@ -2,6 +2,7 @@ var DialogueNode = require('./dialogue_tree_node.js');
 var strings = require('./strings.js');
 var list_keys = require('./utils.js').list_keys;
 var saves = require('./saves.js');
+var media = require('./media.js');
 
 var root = module.exports = new DialogueNode('root')
     // Note: these commands must be available from the root node, or else they won't override
@@ -23,7 +24,8 @@ root.getChildByKey('restart')
 root.getChildByKey('help')
     .registerChildWithText('how to play', strings.how_to_play, ['play', 'how', 'how to'])
     .registerChildWithText('objective', strings.info, ['game objective', 'objective of game', 'objective of the game'])
-    .registerChildWithText('commands', `The commands are ${list_keys(strings.commands)}. Say a command to hear more about it or say return to return to the game.`, ['other commands']);
+    .registerChildWithText('commands', `The commands are ${list_keys(strings.commands)}. Say a command to hear more about it or say return to return to the game.`, ['other commands'])
+    .registerChildWithAction('map', media.sendMap, ['view the map', 'view the', 'view']);
 
 for (var command in strings.commands) {
     root.getChildByKey('help')
