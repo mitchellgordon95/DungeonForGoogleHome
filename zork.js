@@ -17,7 +17,10 @@ function doCommand(app, isReturningUserLook) {
     var command = isReturningUserLook ? "look" : app.getRawInput();
     var dialogue_state = app.getDialogState();
 
-    command = command.replace(/(south|north).?(east|west)/i, "$1 $2");
+    // Fix bug with one word directions not being recognized
+    // Make sure to use two-letter directions since sometimes zork does not correctly interpret "south east"
+    // See https://github.com/mitchellgordon95/DungeonForGoogleHome/issues/9
+    command = command.replace(/((s)outh|(n)orth).?((e)ast|(w)est)/i, "$2$3$5$6")
     var save_file = files.getUserSaveFile(app);
 
     // Make sure we don't pass an empty string to zork / just whitespace to zork. Doing so causes
